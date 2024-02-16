@@ -1,0 +1,16 @@
+{"pagination":{"maxResults":10,"page":1},
+"timeRange":{"duration":"1Y","field":"created","to":1708094037,"from":1676558037},
+    "orderBy":{"field":"created","sort":"desc"},
+    "textSearch":{"fields":["title","human_url","body","extra_fields.*","tags.*"],
+    "text":"Continuous Multivariable Score Superior to 6-Status System for Heart Transplant Candidate Ranking"},
+    "searchTerms":{"should":{"type":["news","abstracts","activity","alerts","dispatch"]},
+    "mustNot":{"status":0,"tags.general_tags":"Digital Health","tags._all":["GenAI"]}},
+    "include":["id","type","created","extra_fields.source","extra_fields","tags.journal",
+    "tags.dgalert_feed","tags.dg_alert","tags.dgalert_feed_alert_type","tags.external_ids.dgmeid",
+    "tags.dgme_ispatron","tags.congress","tags.specialties","tags.mapped_cond_to_spec","tags.conditions",
+    "tags.reporting_author"],
+    "ugc":{"commentsCount":true,"likesCount":true,"userLiked":true,"siteId":531}
+}
+
+
+{"pagination":{"maxResults":10,"page":1},"timeRange":{"duration":"2Y","field":"created","to":1708097272,"from":1645025271},"orderBy":{"field":"created","sort":"desc"},"textSearch":{"text":"Continuous Multivariable Score Superior to 6-Status System for Heart Transplant Candidate Ranking","fields":["title","human_url","body","extra_fields.article_url","tags.specialties","tags.conditions","tags.mapped_cond_to_spec"]},"searchTerms":{"mustNot":{"status":"0","tags._all":["Digital Health","GenAI"]},"should":{"type":["news","abstracts","dispatch","alerts","activity"],"tags.dgalert_feed_alert_type":["epidemic","emergency","food","travel","drug","device"]}},"include":["created","tags","extra_fields.source","extra_fields","type","id","tags.reporting_author"],"ugc":{"commentsCount":true,"likesCount":true,"userLiked":true,"siteId":1}}
