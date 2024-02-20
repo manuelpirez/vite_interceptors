@@ -1,13 +1,16 @@
 import {useRef, useState, useEffect} from 'react';
-import useAuth from '../hooks/useAuth';
 import {Link, useNavigate, useLocation} from 'react-router-dom';
-import {login} from '../api/axios';
+
+import useAuth from '../hooks/useAuthContext';
+import useApiPublic from "../hooks/interceptors/useApiPublic.jsx";
+import { LOGIN } from '../assets/endpoints.jsx';
 
 const Login = () => {
     const {setAuth, persist, setPersist} = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
+    const api = useApiPublic()
 
     const userRef = useRef();
     const errRef = useRef();
@@ -37,8 +40,9 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await login({user, pwd})
+            const response = await api.post(LOGIN)
             console.log(JSON.stringify(response));
+            
             const access = response?.data?.tokens?.access;
             const roles = response?.data?.info?.role?.name;
 

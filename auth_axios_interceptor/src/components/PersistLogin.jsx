@@ -1,78 +1,84 @@
-import {Outlet, useLocation} from "react-router-dom";
 import {useEffect, useState} from "react";
-import useAuth from "../hooks/useAuth.jsx";
-import useTokenLogin from "../hooks/useTokenLogin.jsx";
-import useApiPrivate from "../hooks/useApiPrivate.jsx";
-import {TOKEN_VERIFY} from "../constants/apiConstants.jsx";
+import {Outlet, useLocation, Navigate} from "react-router-dom";
 
-// validate against API on every redirection
+import {TOKEN_VERIFY} from "../assets/endpoints.jsx";
+
+import useAuth from "../hooks/useAuthContext.jsx";
+import useTokenLogin from "../hooks/auth/useTokenLogin.jsx";
+import useApiPrivate from "../hooks/interceptors/useApiPrivate.jsx";
+
+/**
+ * The `PersistLogin` function handles the authentication and authorization logic in a React application.
+ * It checks if the user is already authenticated and if not, it attempts to authenticate the user using a token from the URL.
+ * It also verifies the token with an API endpoint and logs the user out if the token is invalid.
+ * The function returns the `Outlet` component, which renders the appropriate content based on the user's authentication status.
+ */
 const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState(true)
-    const {auth, persist} = useAuth()
+    const {auth, setAuth} = useAuth()
 
     const location = useLocation()
-
-    //const verify = useVerifyToken()
-    const login = useTokenLogin()
+    const tokenLogin = useTokenLogin()
     const apiPrivate = useApiPrivate()
 
-    useEffect(() => {
+
+    const _tokenVerify = async (isMounted) => {
+        setIsLoading(true) 
+        try {
+            console.log('_tokenVerify')
+            await apiPrivate.post(TOKEN_VERIFY)
+        } catch (e) {
+            console.error(e);
+            _tokenLogOut()
+        }finally{
+            isMounted && setIsLoading(false);
+        }
+   
+    }
+    const _tokenLogin = async (isMounted) => {
+        setIsLoading(true)
+        try {
+            console.log('_tokenLogin')
+            await tokenLogin()
+        } catch (e) {
+            console.error(e);
+            _tokenLogOut()
+        }finally{
+            isMounted && setIsLoading(false);
+        }
+    }
+    const _tokenLogOut = () => {
+        console.log('login out');
+        setAuth({});
+        return <Navigate to="/login" state={{from: location}} replace/>;
+    }
+
+
+    useEffect( () => {
         console.log('PERSIST')
         console.log({auth})
         let isMounted = true
-        const verifyToken = async () => {
-            setIsLoading(true)
-            try {
-                //await verify()
-                await apiPrivate.post(TOKEN_VERIFY, {token: auth.access})
-            } catch (e) {
-                console.error(e)
-            } finally {
-                isMounted && setIsLoading(false)
-            }
-        }
-
-        const tokenLogin = async () => {
-            setIsLoading(true)
-            try {
-                await login()
-            } catch (e) {
-                console.error(e)
-            } finally {
-                isMounted && setIsLoading(false)
-            }
-        }
-
-        // verify if token if exists and persists
-        // if (auth?.access && persist) {
+  
 
         if (location.search) {
-            console.log('urltoken available')
-            tokenLogin()
-            // below will only work with cache token
-        } else if (auth?.access && !location.search) {
-            console.log('auth available, and no urltoken')
-            verifyToken()
-        } else if (!auth?.access) {
-            console.log('free load')
+            console.log('urltoken available');
+            _tokenLogin(isMounted);
+          } else if (auth?.access) {
+            console.log('auth available, and no urltoken');
+            _tokenVerify(isMounted);
+          } else {
+            console.log('free load');
             setIsLoading(false);
-        }
-
-
-        // prevent memory leak
+          }
+ 
         return () => {
             setIsLoading(false)
             isMounted = false
         }
-    }, [location])
+    }, [location ])
 
-
-    if (!persist) {
-        return <Outlet/>
-    }
-    if (isLoading) {
-        return <p> LOADING... </p>
-    }
+    if (isLoading) return <p> LOADING... </p>
+    
     return <Outlet/>
 
 }

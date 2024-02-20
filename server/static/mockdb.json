@@ -1,4 +1,21 @@
 {
+  "users":{
+"id": 1,
+"username": "bret",
+"email": "bret@coso.com",
+"address":{
+  "street":"street 1",
+  "suite":"suite 1",
+  "city": "city 1",
+  "zipcode": "zp 1",
+  "geo":{"lat":"1", "lng":"123"}
+},
+  "phone":"123",
+  "website":"coso@gmail.com",
+  "company":{
+    "name":"cosocompany"
+  }
+},
     "misc": {
       "en-GB": "<strong>en-GB MISC</strong>",
       "zh-CN": "<strong>zh-CN MISC</strong>",

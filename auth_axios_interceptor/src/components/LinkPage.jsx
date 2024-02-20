@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom"
-import {ROUTES} from "../constants/routesConstants.jsx";
+import {ROUTES} from "../assets/routes.json"
 
 const LinkPage = () => {
     return (

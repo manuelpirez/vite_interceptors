@@ -1,5 +1,5 @@
 import {Navigate, Outlet, useLocation} from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/useAuthContext";
 
 /**
  * Check allowed role agains token and grants/deny access

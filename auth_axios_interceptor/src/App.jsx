@@ -1,3 +1,5 @@
+import {Routes, Route} from 'react-router-dom';
+
 import Feedback from './components/Feedback.jsx';
 import Feed from './components/Feed.jsx';
 import Login from './components/Login';
@@ -12,27 +14,10 @@ import LinkPage from './components/LinkPage';
 import RequireAuth from './components/RequireAuth';
 import PersistLogin from "./components/PersistLogin.jsx";
 
-import {Routes, Route} from 'react-router-dom';
+import {ROLES} from "./assets/roles.json"
+import {ROUTES} from "./assets/routes.json"
 
 import useTracking from "./hooks/useTracking.jsx";
-
-const ROLES = {
-    default: 'default',
-    auth: 'auth',
-    soft: 'soft',
-    limited: 'limited',
-    limited_reg: 'limited_reg'
-}
-const ROUTES = {
-    home: '/',
-    login: 'login',
-    profile: 'profile',
-    feedback: 'feedback',
-    feed: 'feed',
-    misc: 'misc',
-    article: 'article',
-    linkpage: 'linkpage'
-}
 
 function App() {
     // enable tracking

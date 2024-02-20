@@ -1,8 +1,10 @@
 import {useRef, useState, useEffect} from "react";
+import {Link} from "react-router-dom";
+
 import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Link} from "react-router-dom";
-import useApiRequest from "../hooks/useApiRequest.jsx";
+
+import useApiPublic from "../hooks/interceptors/useApiPublic.jsx";
 import useTracking from "../hooks/useTracking.jsx";
 
 const FEEDBACK_URL = '/user_feedback';
@@ -11,7 +13,7 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const Feedback = () => {
     const userRef = useRef();
     const errRef = useRef();
-    const apiRequest = useApiRequest()
+    const api = useApiPublic()
     const {trackSubmitAction} = useTracking()
 
     const [user, setUser] = useState('');
@@ -38,7 +40,7 @@ const Feedback = () => {
             return;
         }
         try {
-            const response = await apiRequest.post(FEEDBACK_URL, {user})
+            const response = await api.post(FEEDBACK_URL, {user})
             console.log(response?.data);
             setSuccess(true);
             //clear state and controlled inputs

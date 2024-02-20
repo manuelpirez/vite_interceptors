@@ -1,6 +1,8 @@
 import {useRef, useState, useEffect} from "react";
-import useApiRequest from "../hooks/useApiRequest.jsx";
+
 import LinkPage from "./LinkPage.jsx";
+
+import useApiPrivate from "../hooks/interceptors/useApiPrivate.jsx";
 import useTracking from "../hooks/useTracking.jsx";
 
 const FEED_TOTAL_PAGES = 5
@@ -13,7 +15,8 @@ const AD = {
 }
 
 const Feed = () => {
-    const apiRequest = useApiRequest()
+    const api = useApiPrivate()
+
     const {trackAction} = useTracking()
 
 
@@ -33,22 +36,29 @@ const Feed = () => {
     );
 
     const callFeed = async () => {
-        setLoading(true);
-        let response = await apiRequest.get(RIVER_URL);
-
-        trackAction({action:'feed', extra:`${pageNum}`})
-
-        const newList = response.data.results
-
-
-        if (initial) {
-            newList.splice(FEED_AD_INDEX, 0, AD);
-            setInitial(false)
+        try {
+            setLoading(true);
+            let response = await api.post(RIVER_URL, {query:'test-data'});
+    
+            trackAction({action:'feed', extra:`${pageNum}`})
+    
+            const newList = response.data.results
+    
+    
+            if (initial) {
+                newList.splice(FEED_AD_INDEX, 0, AD);
+                setInitial(false)
+            }
+    
+            let all = new Set([...articles, ...response.data.results]);
+            setArticles([...all]);
+        
+        } catch (error) {
+            alert('error')
+        }finally{
+            setLoading(false);
         }
 
-        let all = new Set([...articles, ...response.data.results]);
-        setArticles([...all]);
-        setLoading(false);
     };
 
     useEffect(() => {
@@ -95,7 +105,7 @@ const ArtCard = ({data, setLastElement}) => {
         <div ref={setLastElement} style={{border: '2px solid black', marginBottom: '20px', padding: '10px'}}>
             <div style={{display: 'flex', alignItems: 'center', borderBottom: '1px solid white', marginBottom: '20px'}}>
                 <img
-                    src='https://staging.c-phnx.ntk-institute.org/assets/newsletter/dg/logos/ntk-logo-only.svg'
+                    src='https://c-phnx.ntk-institute.org/assets/newsletter/dg/logos/ntk-logo-only.svg'
                     style={{'height': '50px', paddingRight:'10px'}}
                     alt='icon'
                 />
