@@ -1,9 +1,0 @@
-{
-  "storageOpts": {
-    "domain": "localhost",
-    "type": "local"
-  },
-  "tracking": {
-    "schema": { "video": { "action": "presentation/video" } }
-  }
-}
