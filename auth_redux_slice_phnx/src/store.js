@@ -15,11 +15,21 @@ import {
   REGISTER,
   persistStore
 } from 'redux-persist'
+import { CookieStorage } from 'redux-persist-cookie-storage'
+import Cookies from 'cookies-js'
+import { storageOpts } from '@config'
 import storage from 'redux-persist/lib/storage'
 
 const persistConfig = {
   key: 'root',
-  storage,
+  storage:
+    storageOpts.type === 'cookies'
+      ? new CookieStorage(Cookies, {
+          setCookieOptions: {
+            domain: storageOpts.domain
+          }
+        })
+      : storage,
   whitelist: ['auth']
 }
 
@@ -29,6 +39,7 @@ const reducers = combineReducers({
   [privateApiSlice.reducerPath]: privateApiSlice.reducer,
   [apiSlice.reducerPath]: apiSlice.reducer
 })
+
 const persistedReducer = persistReducer(persistConfig, reducers)
 
 export const store = configureStore({
@@ -45,5 +56,4 @@ export const store = configureStore({
     ),
   devTools: import.meta.env.MODE !== 'production'
 })
-
 export const persistor = persistStore(store)

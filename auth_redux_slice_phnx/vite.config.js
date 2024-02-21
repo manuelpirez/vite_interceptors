@@ -14,7 +14,9 @@ export default defineConfig({
       '@static': path.resolve(__dirname, './src/static/'),
       '@features': path.resolve(__dirname, './src/features/'),
       '@api': path.resolve(__dirname, './src/features/api'),
-      '@public': path.resolve(__dirname, './public/')
+      '@public': path.resolve(__dirname, './public/'),
+      '@config': path.resolve(__dirname, './src/site.config.json'),
+      '@services': path.resolve(__dirname, './services')
     }
   }
 })

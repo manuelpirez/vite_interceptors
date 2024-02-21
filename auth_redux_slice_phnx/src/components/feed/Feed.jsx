@@ -37,10 +37,9 @@ const Feed = () => {
       let response = await getFeed({ query: 123 })
 
       trackAction({ action: 'feed', extra: `${pageNum}` })
-      const newList = [...response.data.results]
 
       if (initial) {
-        newList.splice(FEED_AD_INDEX, 0, AD)
+        ;[...response.data.results].splice(FEED_AD_INDEX, 0, AD)
         setInitial(false)
       }
 
