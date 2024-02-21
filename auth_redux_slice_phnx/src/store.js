@@ -1,21 +1,49 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { apiSlice } from './features/api/apiSlice.js'; // Adjust the path based on your project structure
-import { authApiSlice } from './features/api/authApiSlice.js'; // Adjust the path based on your project structure
-import authReducer from './features/auth/authSlice.js'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+
+import publicApiSlice from '@features/api/publicApiSlice.js'
+import privateApiSlice from '@features/api/privateApiSlice.js'
+import apiSlice from '@features/api/apiSlice.js'
+import authReducer from '@features/auth/authSlice.js'
+
+import {
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  persistStore
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth']
+}
+
+const reducers = combineReducers({
+  auth: authReducer,
+  [publicApiSlice.reducerPath]: publicApiSlice.reducer,
+  [privateApiSlice.reducerPath]: privateApiSlice.reducer,
+  [apiSlice.reducerPath]: apiSlice.reducer
+})
+const persistedReducer = persistReducer(persistConfig, reducers)
 
 export const store = configureStore({
-  reducer: {
-    // Add the generated reducer as a specific top-level slice
-    // these are dynamically named
-    auth: authReducer,
-    [apiSlice.reducerPath]: apiSlice.reducer,
-    [authApiSlice.reducerPath]: authApiSlice.reducer
-  },
-  // Adding the api middleware enables caching, invalidation, polling,
-  // and other useful features of `rtk-query`.
+  reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(
-      apiSlice.middleware,
-      authApiSlice.middleware
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    }).concat(
+      publicApiSlice.middleware,
+      privateApiSlice.middleware,
+      apiSlice.middleware
     ),
+  devTools: import.meta.env.MODE !== 'production'
 })
+
+export const persistor = persistStore(store)

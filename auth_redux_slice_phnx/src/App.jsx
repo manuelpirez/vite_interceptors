@@ -1,41 +1,53 @@
-import { useState } from "react";
-import Counter from "./components/Counter"
-import TodoList from "./components/TodoList";
-import TodoListRtk from "./components/TodoListRtk";
+import { Routes, Route } from 'react-router-dom'
+import { ROLES } from '@static/roles.json'
+import { ROUTES } from '@static/routes.json'
 
-const App = () => {
-    const projects = ['counter', 'article', 'articlertk'];
-    const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+import Feedback from '@components/Feedback.jsx'
+import Feed from '@components/feed/Feed.jsx'
+import Misc from '@components/Misc.jsx'
+import Profile from '@components/Profile.jsx'
+import Article from '@components/Article.jsx'
+import LinkPage from '@components/LinkPage'
+import PersistLogin from '@components/PersistLogin.jsx'
+import Home from '@components/Home'
+import Login from '@components/Login'
+import RequireAuth from '@components/RequireAuth'
+import Layout from '@components/Layout'
+import NotFound from '@components/NotFound'
+import Unauthorized from '@components/Unauthorized'
 
-    const handleClick = () => {
-        const nextIndex = currentProjectIndex >= projects.length - 1 ? 0 : currentProjectIndex + 1;
-        console.log(nextIndex)
-        setCurrentProjectIndex(nextIndex);
-    };
+import useTracking from '@hooks/useTracking.js'
 
-    const getCurrentProjectComponent = () => {
-        switch (projects[currentProjectIndex]) {
-            case 'counter':
-                return <><h2>Counter App</h2><Counter /></>;
-            case 'article':
-                return <><h2>Todo List</h2><TodoList /></>;
-            case 'articlertk':
-                return <><h2>Todo List RTK</h2><TodoListRtk /></>;
-            default:
-                return null;
-        }
-    };
+function App() {
+  useTracking()
 
-    return (
-        <>
-            <button onClick={() => handleClick()}>
-                Toggle project
-            </button>
-            <hr />
-            <br />
-            {getCurrentProjectComponent()}
-        </>
-    );
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {/* public */}
+        <Route element={<PersistLogin />}>
+          <Route path={ROUTES.login} element={<Login />} />
+          <Route path={ROUTES.feedback} element={<Feedback />} />
+          <Route path={ROUTES.misc} element={<Misc />} />
+          <Route path={ROUTES.unauthorized} element={<Unauthorized />} />
+
+          <Route element={<RequireAuth allowedRoles={Object.values(ROLES)} />}>
+            <Route path={ROUTES.home} element={<Home />} />
+            <Route path={ROUTES.article} element={<Article />} />
+            <Route path={ROUTES.linkpage} element={<LinkPage />} />
+            <Route path={ROUTES.feed} element={<Feed />} />
+          </Route>
+
+          <Route element={<RequireAuth allowedRoles={[ROLES.auth]} />}>
+            <Route path={ROUTES.profile} element={<Profile />} />
+          </Route>
+        </Route>
+
+        {/* catch all */}
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  )
 }
 
-export default App;
+export default App
