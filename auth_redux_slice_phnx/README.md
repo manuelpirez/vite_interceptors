@@ -25,3 +25,13 @@ In addition, Vite is highly extensible via its [Plugin API](https://vitejs.dev/g
 
 - install packages `npm install`
 - run dev server `npm run dev`
+
+# Commits
+
+- We'll follow conventional commits convention
+  https://www.conventionalcommits.org/en/v1.0.0/
+
+- Through
+  - commitizen
+  - cz-conventional-changelog
+  - cz-git
